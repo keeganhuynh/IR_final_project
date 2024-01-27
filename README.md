@@ -4,7 +4,7 @@
 1. (27/01/2024) I don't know how to use the CIRR dataset to evaluate other similarity measures because I haven't read the dataset structure. If you have time on your hands, please check the dataset structure and provide an explanation for us.
 ![image](https://github.com/keeganhuynh/IR_final_project/assets/58461941/79a9d0f9-ed58-4537-a081-e78af92cd282)
 
-2. Hiệp is coding to evaluate with Recall in test1 
+2. Hiệp is coding to evaluate using Recall in test1 
 
 
 **Problem:**
