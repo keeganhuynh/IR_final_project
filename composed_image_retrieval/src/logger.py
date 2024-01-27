@@ -24,7 +24,7 @@ from torch.multiprocessing import Queue
 
 
 def setup_primary_logging(log_file, level):
-    log_queue = Queue(-1)
+    log_queue = Queue(0)
 
     file_handler = logging.FileHandler(filename=log_file)
     stream_handler = logging.StreamHandler()

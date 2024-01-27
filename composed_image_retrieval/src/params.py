@@ -32,6 +32,11 @@ def get_default_params(model_name):
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    
+    parser.add_argument('--distributed', 
+        action='store_true', 
+        help='Enable distributed computing')
+    
     parser.add_argument("--no-time-suffix",
         default=True,
         action="store_false",

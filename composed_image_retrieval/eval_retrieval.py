@@ -147,6 +147,7 @@ def main_worker(gpu, ngpus_per_node, log_queue, args):
     cudnn.benchmark = True
     cudnn.deterministic = False   
     root_project = os.path.join(get_project_root(), 'data')
+    print(root_project)
     ## Padding option
     if args.target_pad:
         trans_tmp = preprocess_val.transforms
@@ -224,6 +225,7 @@ def main_worker(gpu, ngpus_per_node, log_queue, args):
                                      args, 
                                      source_dataloader, 
                                      target_dataloader)
+        os.makedirs('res_cirr', exist_ok=True)
         for key, value in results.items():
             with open('res_cirr/' + key + '.json', 'w') as f:
                 json.dump(value, f)
@@ -340,7 +342,8 @@ def main():
 
     # Set multiprocessing type to spawn.
     # This is important for logging to work with multiprocessing.
-    torch.multiprocessing.set_start_method("spawn")
+    # src: torch.multiprocessing.set_start_method("spawn")
+    torch.multiprocessing.set_start_method("fork")
 
     # Set logger
     args.log_level = logging.DEBUG if args.debug else logging.INFO

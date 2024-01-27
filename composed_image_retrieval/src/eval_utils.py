@@ -52,7 +52,8 @@ def visualize_results(model, img2text, args, prompt, dataloader):
     text = torch.cat(text, dim=0)    
     text = text.cuda(args.gpu, non_blocking=True)    
     all_image_features, all_image_filenames = [], []
-    m = model.module if args.distributed or args.dp else model
+    #m = model.module if args.distributed or args.dp else model
+    m = model
     query_file = args.query_file
     path_save = os.path.join("./data", args.retrieval_data.split('/')[-1].split('.')[0]+".pkl")
     if os.path.exists(path_save):
@@ -400,7 +401,7 @@ def evaluate_cirr_test(model, img2text, args, query_loader, target_loader):
                 all_target_paths.append(path)
 
         for batch in tqdm(query_loader):
-            ref_images, text_with_blank, caption_only, ref_paths, pairids = batch
+            ref_images, text_with_blank, caption_only, ref_paths, pairids, _ = batch
             if args.gpu is not None:
                 ref_images = ref_images.cuda(args.gpu, non_blocking=True)
                 text_with_blank = text_with_blank.cuda(args.gpu, non_blocking=True)
@@ -414,7 +415,9 @@ def evaluate_cirr_test(model, img2text, args, query_loader, target_loader):
             caption_features = m.encode_text(caption_only)
             query_image_features = m.encode_image(ref_images)
 
-            if args.eval_combiner:
+            # if args.eval_combiner:
+            eval_combiner_args = False
+            if eval_combiner_args:
                 composed_feature = img2text(query_image_features, caption_features)
             else:
                 query_image_tokens = img2text(query_image_features)
@@ -444,7 +447,7 @@ def evaluate_cirr_test(model, img2text, args, query_loader, target_loader):
                  'image': torch.cat(all_query_image_features),
                  'text': torch.cat(all_caption_features),
                  'mixture': torch.cat(all_mixture_features)}        
-        for key, value in feats:
+        for key, value in feats.items():
             res_all[key] = metrics_func(ref_features=value)
     return res_all
 
@@ -559,20 +562,28 @@ def get_metrics_cirr(image_features, ref_features, reference_names, index_names,
     metrics = {}
     distances = 1 - ref_features @ image_features.T
     sorted_indices = torch.argsort(distances, dim=-1).cpu()
+    print(sorted_indices.shape)
     sorted_index_names = np.array(index_names)[sorted_indices]
-
+    print('image_features: ',len(image_features))
+    print('reference_names: ',len(reference_names))
+    print('index_name: ', len(index_names))
+    print('target_name: ', len(target_names))
+    print('sorted_index_name: ', sorted_index_names.shape)
+    
     # Delete the reference image from the results
-    reference_mask = torch.tensor(
-        sorted_index_names != np.repeat(np.array(reference_names), 
-        len(index_names)).reshape(len(target_names), -1))        
+    reference_mask = \
+        torch.tensor(\
+              sorted_index_names != np.repeat(np.array(reference_names), len(index_names)).reshape(len(target_names), -1)    \
+              )       
+    
     sorted_index_names = sorted_index_names[reference_mask].reshape(sorted_index_names.shape[0],
-                                                                    sorted_index_names.shape[1] - 1)
+                                                                    sorted_index_names.shape[1])
 
+    print(sorted_index_names)
     # Compute the ground-truth labels wrt the predictions
-    labels = torch.tensor(
-        sorted_index_names == np.repeat(np.array(target_names), 
-        len(index_names) - 1).reshape(len(target_names), -1))
-
+    labels = \
+        torch.tensor(sorted_index_names == np.repeat(np.array(target_names), len(index_names)).reshape(len(target_names), -1))
+    
     assert torch.equal(torch.sum(labels, dim=-1).int(), torch.ones(len(target_names)).int())
     for k in [1, 5, 10, 50, 100]:
         metrics[f"recall_R@{k}"] = (torch.sum(labels[:, :k]) / len(labels)).item() * 100
@@ -582,6 +593,7 @@ def get_metrics_cirr(image_features, ref_features, reference_names, index_names,
 
 def get_cirr_testoutput(image_features, ref_features, reference_names, index_names, id_names):
     metrics = {}
+    
     distances = 1 - ref_features @ image_features.T
     sorted_indices = torch.argsort(distances, dim=-1).cpu()
     sorted_index_names = np.array(index_names)[sorted_indices]
@@ -591,6 +603,7 @@ def get_cirr_testoutput(image_features, ref_features, reference_names, index_nam
         sorted_index_names != np.repeat(np.array(reference_names), len(index_names)).reshape(len(sorted_index_names), -1))
     sorted_index_names = sorted_index_names[reference_mask].reshape(sorted_index_names.shape[0],
                                                                     sorted_index_names.shape[1] - 1)
+
     result_dict = {"version": "rc2", "metric": "recall"}
     for ind in range(len(id_names)):
         pairid = str(id_names[ind].item())
