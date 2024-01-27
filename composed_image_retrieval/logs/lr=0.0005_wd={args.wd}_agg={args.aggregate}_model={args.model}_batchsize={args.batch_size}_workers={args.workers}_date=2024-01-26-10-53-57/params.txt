@@ -1,0 +1,66 @@
+C: 3.16
+aggregate: True
+batch_size: 64
+beta1: 0.9
+beta2: 0.98
+checkpoint_path: ./logs/lr=0.0005_wd={args.wd}_agg={args.aggregate}_model={args.model}_batchsize={args.batch_size}_workers={args.workers}_date=2024-01-26-10-53-57/checkpoints
+copy_codebase: False
+csv_caption_key: title
+csv_img_key: filepath
+csv_separator: 	
+dataset_type: auto
+dataset_type_val: auto
+debug: False
+demo_out: IR project - Pix2word/demo_out
+dist_backend: nccl
+dist_url: tcp://127.0.0.1:6100
+distributed: False
+dp: False
+droprate: 0.1
+epochs: 32
+eps: 1e-06
+eval_mode: coco
+gpu: 0
+imagenet_v2: None
+imagenet_val: None
+log_level: 20
+log_path: ./logs/lr=0.0005_wd={args.wd}_agg={args.aggregate}_model={args.model}_batchsize={args.batch_size}_workers={args.workers}_date=2024-01-26-10-53-57/out.log
+logs: ./logs/
+lr: 0.0005
+middle_dim: 512
+model: ViT-L/14
+multigpu: None
+n_layer: 2
+name: lr=0.0005_wd={args.wd}_agg={args.aggregate}_model={args.model}_batchsize={args.batch_size}_workers={args.workers}_date=2024-01-26-10-53-57
+ngpus_per_node: 1
+openai_pretrained: True
+precision: amp
+prompts: add dog in *
+query_file: ./dev/dev-63-0-img1.png
+rank: 0
+regression_frequency: 2
+report_to: 
+resume: /content/drive/MyDrive/Information Retrieval/pic2word_model.pt
+retrieval_data: cirr
+save_frequency: 1
+save_most_recent: False
+skip_aggregate: False
+skip_scheduler: False
+source_data: None
+target_data: None
+target_pad: False
+tensorboard: False
+tensorboard_path: 
+time_suffix: True
+train_data: None
+use_bn_sync: False
+use_debiased_sampler: False
+use_prefix: False
+val_data: None
+wandb: False
+wandb_notes: 
+warmup: 10000
+wd: 0.2
+workers: 1
+world_size: 1
+zeroshot_frequency: 2
