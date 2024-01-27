@@ -7,12 +7,8 @@
 
 **Read carefully GIT IGNORE and add folder DATA with exactly structure:**
 
-cirr
-  ├── captions
-        └──cap.rc2.val.json
-  ├── dev
-  └── image_splits
-        └──split.rc2.val.json
+![image](https://github.com/keeganhuynh/IR_final_project/assets/58461941/aec96078-360b-4b0d-8baf-5c3ae57ecce8)
+
 
 **TESTING CIRR (data: test1, test2)**
 -> https://cirr.cecs.anu.edu.au/
