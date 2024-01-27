@@ -6,6 +6,7 @@
 3. 3. I have set args.distributed to False by default (because I cannot perform computations on multiple GPUs)
 
 **Read carefully GIT IGNORE and add folder DATA with exactly structure:**
+
 cirr
   ├── captions
         └──cap.rc2.val.json
@@ -13,6 +14,7 @@ cirr
   └── image_splits
         └──split.rc2.val.json
 
-**TESTING CIRR (data: test1, test2) -> https://cirr.cecs.anu.edu.au/
+**TESTING CIRR (data: test1, test2)**
+-> https://cirr.cecs.anu.edu.au/
 
 
